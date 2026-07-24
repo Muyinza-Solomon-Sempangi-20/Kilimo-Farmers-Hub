@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: kilimo-hub
+    env: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn kilimo_hub.wsgi --workers 4 --timeout 120
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: False
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: SUNBIRD_API_KEY
+        sync: false
+      - key: SUNBIRD_API_URL
+        value: https://api.sunbird.ai/tasks/nllb_translate

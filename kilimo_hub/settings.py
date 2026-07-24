@@ -8,9 +8,13 @@ except ImportError:
     pass
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-kilimo-hub-dev-key-change-in-production'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-kilimo-hub-dev-key-change-in-production')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+_host_list = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+_pythonanywhere = os.environ.get('PYTHONANYWHERE_HOSTNAME', '')
+if _pythonanywhere and _pythonanywhere not in _host_list:
+    _host_list.append(_pythonanywhere)
+ALLOWED_HOSTS = [h.strip() for h in _host_list if h.strip()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,6 +35,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,6 +62,8 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://struggle-moonlight-ari
 DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
