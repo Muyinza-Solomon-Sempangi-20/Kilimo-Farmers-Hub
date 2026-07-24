@@ -11,12 +11,20 @@
 </div>
 {% endblock %}
 {% block content %}
+
+{% if district_filter %}
+<div class="alert-strip info" style="border-radius:8px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
+  <span>Showing prices for <strong>{{ district_filter|title }}</strong> markets</span>
+  <a href="?commodity={{ selected_commodity.name|default:'' }}" style="color:var(--primary);font-size:12px;text-decoration:underline">Show all</a>
+</div>
+{% endif %}
+
 <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-  <a href="?commodity=Maize" class="btn {% if not request.GET.commodity or request.GET.commodity == 'Maize' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Maize</a>
-  <a href="?commodity=Beans" class="btn {% if request.GET.commodity == 'Beans' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Beans</a>
-  <a href="?commodity=Coffee" class="btn {% if request.GET.commodity == 'Coffee' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Coffee</a>
-  <a href="?commodity=Banana" class="btn {% if request.GET.commodity == 'Banana' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Banana</a>
-  <a href="?commodity=Livestock" class="btn {% if request.GET.commodity == 'Livestock' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Livestock</a>
+  <a href="?commodity=Maize{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if not request.GET.commodity or request.GET.commodity == 'Maize' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Maize</a>
+  <a href="?commodity=Beans{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Beans' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Beans</a>
+  <a href="?commodity=Coffee{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Coffee' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Coffee</a>
+  <a href="?commodity=Banana{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Banana' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Banana</a>
+  <a href="?commodity=Livestock{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Livestock' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Livestock</a>
 </div>
 
 <div class="card" style="background:#E1F5EE;border-color:#9FE1CB;margin-bottom:14px">
@@ -25,7 +33,7 @@
 
 <div class="card" style="padding:0;overflow:hidden">
   <div style="padding:14px 16px;border-bottom:1px solid var(--gray-border)">
-    <div class="section-title" style="margin:0">Maize grain prices (UGX per kg)</div>
+    <div class="section-title" style="margin:0">{{ selected_commodity.name|default:"All" }} prices (UGX per kg)</div>
   </div>
   <div class="table-wrap">
     <table>
@@ -33,7 +41,7 @@
       <tbody>
         {% if prices %}
           {% for p in prices %}
-          <tr><td><strong>{{ p.market.name }}</strong></td><td>{{ p.market.district }}</td><td style="font-weight:600;color:var(--green-dark)">{{ p.price_ugx }}</td><td>—</td></tr>
+          <tr><td><strong>{{ p.market.name }}</strong></td><td>{{ p.market.district|title }}</td><td style="font-weight:600;color:var(--green-dark)">{{ p.price_ugx }}</td><td>—</td></tr>
           {% endfor %}
         {% else %}
           <tr><td><strong>St. Balikuddembe (Owino)</strong></td><td>Kampala</td><td style="font-weight:600;color:var(--green-dark)">1,450</td><td><span class="up">+50</span></td></tr>
@@ -43,22 +51,6 @@
           <tr><td><strong>Arua Market</strong></td><td>Arua</td><td style="font-weight:600;color:var(--green-dark)">1,200</td><td style="color:var(--text-muted)">Stable</td></tr>
           <tr><td><strong>Mbarara Market</strong></td><td>Mbarara</td><td style="font-weight:600;color:var(--green-dark)">1,250</td><td><span class="up">+30</span></td></tr>
         {% endif %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="card" style="padding:0;overflow:hidden;margin-top:4px">
-  <div style="padding:14px 16px;border-bottom:1px solid var(--gray-border)">
-    <div class="section-title" style="margin:0">Beans (UGX per kg)</div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Market</th><th>District</th><th>Price (UGX/kg)</th><th>Change</th></tr></thead>
-      <tbody>
-        <tr><td><strong>St. Balikuddembe</strong></td><td>Kampala</td><td style="font-weight:600;color:var(--green-dark)">3,200</td><td><span class="up">+150</span></td></tr>
-        <tr><td><strong>Gulu Main Market</strong></td><td>Gulu</td><td style="font-weight:600;color:var(--green-dark)">2,900</td><td><span class="down">-100</span></td></tr>
-        <tr><td><strong>Arua Market</strong></td><td>Arua</td><td style="font-weight:600;color:var(--green-dark)">2,750</td><td style="color:var(--text-muted)">Stable</td></tr>
       </tbody>
     </table>
   </div>

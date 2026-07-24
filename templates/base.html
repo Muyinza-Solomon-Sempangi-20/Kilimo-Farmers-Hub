@@ -292,6 +292,11 @@ tr:hover td{background:var(--gray-bg)}
           </div>
         </div>
         {% if user.is_authenticated %}
+        <div id="location-indicator" style="display:none; align-items:center; gap:4px; padding:4px 10px; border-radius:20px; background:rgba(74,222,128,0.15); color:#4ade80; font-size:12px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>
+          <span id="detected-location" style="display:none;"></span>
+          <span class="detecting-text">Detecting...</span>
+        </div>
         <a href="/accounts/profile/" class="topbar-user">
           <div class="topbar-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
           <span>{{ user.first_name|default:user.username }}</span>
@@ -451,7 +456,74 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     translatePage(currentLang, label);
   }
+
+  // Auto-detect location on first visit
+  detectUserLocation();
 });
+
+// ── Location Detection ──────────────────────────────────
+function detectUserLocation() {
+  // Only detect if we haven't already this session
+  if (sessionStorage.getItem('kilimo_location_detected')) return;
+  if (!navigator.geolocation) return;
+
+  // Show detecting indicator
+  const indicator = document.getElementById('location-indicator');
+  if (indicator) indicator.style.display = 'flex';
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      fetch('/detect-location/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrfToken()
+        },
+        body: JSON.stringify({ lat: lat, lon: lon })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.district) {
+          localStorage.setItem('kilimo_district', data.district);
+          sessionStorage.setItem('kilimo_location_detected', '1');
+          // Update location indicator
+          const locEl = document.getElementById('detected-location');
+          if (locEl) {
+            locEl.textContent = data.district + ', Uganda';
+            locEl.style.display = 'inline';
+          }
+          // Update sidebar location
+          const sidebarLoc = document.getElementById('sidebar-location');
+          if (sidebarLoc) sidebarLoc.textContent = data.district;
+          if (indicator) indicator.style.display = 'none';
+        }
+      })
+      .catch(() => {
+        if (indicator) indicator.style.display = 'none';
+      });
+    },
+    function(error) {
+      // Geolocation denied or failed - use profile district
+      if (indicator) indicator.style.display = 'none';
+    },
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+  );
+}
+
+function manualLocation(district) {
+  localStorage.setItem('kilimo_district', district);
+  fetch('/detect-location/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCsrfToken()
+    },
+    body: JSON.stringify({ lat: 0, lon: 0, district: district })
+  }).catch(() => {});
+}
 </script>
 
 </body>

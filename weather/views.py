@@ -212,9 +212,18 @@ def get_weather(district):
 
 @login_required
 def weather_home(request):
-    district = request.GET.get('district', 'Mukono')
+    district = request.GET.get('district', '')
+    
+    # If no district specified, use the user's profile district
+    if not district:
+        profile = getattr(request.user, 'farmer_profile', None)
+        if profile and profile.district:
+            # Capitalize to match DISTRICT_COORDS keys
+            district = profile.district.capitalize()
+    
     if district not in DISTRICT_COORDS:
         district = 'Mukono'
+    
     forecast = get_weather(district)
     districts = list(DISTRICT_COORDS.keys())
     return render(request, 'weather/home.html', {

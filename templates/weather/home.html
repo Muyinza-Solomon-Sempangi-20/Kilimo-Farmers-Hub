@@ -76,11 +76,53 @@
 
 <!-- District selector -->
 <div class="section-title">Select district</div>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+  <a href="#" onclick="detectWeatherLocation(); return false;" class="btn btn-primary" style="width:auto;font-size:12px;padding:6px 12px">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12" style="vertical-align:middle;margin-right:2px"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg>
+    Use my location
+  </a>
   {% for d in districts %}
   <a href="?district={{ d }}" class="btn {% if d == district %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto;font-size:12px;padding:6px 12px">{{ d }}</a>
   {% endfor %}
 </div>
+
+{% block extra_js %}
+<script>
+function detectWeatherLocation() {
+  if (!navigator.geolocation) {
+    alert('Geolocation is not supported by your browser');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      fetch('/detect-location/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrfToken()
+        },
+        body: JSON.stringify({ lat: lat, lon: lon })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.district) {
+          window.location.href = '?district=' + encodeURIComponent(data.district);
+        }
+      })
+      .catch(() => {
+        alert('Could not determine your district. Please select manually.');
+      });
+    },
+    function(err) {
+      alert('Location access denied. Please select your district manually.');
+    },
+    { enableHighAccuracy: false, timeout: 10000 }
+  );
+}
+</script>
+{% endblock %}
 
 {% if forecast.fetched_at %}
 <div style="margin-top:14px;font-size:11px;color:var(--text-muted)">
