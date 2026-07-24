@@ -58,7 +58,18 @@ TEMPLATES = [{
 }]
 
 WSGI_APPLICATION = 'kilimo_hub.wsgi.application'
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://struggle-moonlight-arise.ngrok-free.app','https://struggle-moonlight-arise.ngrok-free.dev']
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'https://struggle-moonlight-arise.ngrok-free.app',
+    'https://struggle-moonlight-arise.ngrok-free.dev',
+    f'https://{os.environ.get("PYTHONANYWHERE_HOSTNAME", "MuyinzaSolomon10.pythonanywhere.com")}',
+]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
 DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
