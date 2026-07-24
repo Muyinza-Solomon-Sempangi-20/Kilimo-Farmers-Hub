@@ -7,7 +7,10 @@ class FarmerProfile(models.Model):
         ('jinja', 'Jinja'), ('gulu', 'Gulu'), ('mbarara', 'Mbarara'),
         ('arua', 'Arua'), ('lira', 'Lira'), ('soroti', 'Soroti'),
     ]
-    LANGUAGE_CHOICES = [('en', 'English'), ('lg', 'Luganda'), ('ach', 'Acholi'), ('ny', 'Runyankore')]
+    LANGUAGE_CHOICES = [
+        ('en', 'English'), ('lug', 'Luganda'), ('ach', 'Acholi'),
+        ('nyn', 'Runyankore'), ('sog', 'Lusoga'), ('teo', 'Ateso'),
+    ]
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='farmer_profile')
     phone = models.CharField(max_length=15, blank=True)
     district = models.CharField(max_length=50, choices=DISTRICT_CHOICES, default='mukono')

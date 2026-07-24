@@ -10,8 +10,8 @@ from .service import translate_text, SUPPORTED_LANGUAGES
 @require_POST
 def translate_view(request):
     """
-    AJAX endpoint: POST {text, target_lang}
-    Returns {translated, source_lang, target_lang}
+    AJAX endpoint: POST {text, target_lang, source_lang}
+    Returns {translated, source_lang, target_lang, target_name}
     """
     try:
         data = json.loads(request.body)
@@ -31,6 +31,29 @@ def translate_view(request):
             'target_lang': target_lang,
             'target_name': SUPPORTED_LANGUAGES[target_lang],
         })
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+
+@login_required
+@require_POST
+def save_language(request):
+    """
+    Save user's preferred language to their profile.
+    POST {language: 'lug'}
+    """
+    try:
+        data = json.loads(request.body)
+        lang = data.get('language', 'en')
+        if lang not in SUPPORTED_LANGUAGES:
+            return JsonResponse({'error': f'Unsupported language: {lang}'}, status=400)
+
+        profile = getattr(request.user, 'farmer_profile', None)
+        if profile:
+            profile.preferred_language = lang
+            profile.save()
+            return JsonResponse({'status': 'ok', 'language': lang, 'language_name': SUPPORTED_LANGUAGES[lang]})
+        return JsonResponse({'error': 'No profile found'}, status=404)
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
 

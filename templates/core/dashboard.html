@@ -1,73 +1,65 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block nav_home %}active{% endblock %}
-{% block topbar %}
-<div class="topbar">
-  <button class="hamburger" onclick="openSidebar()" aria-label="Open menu">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-  <div class="topbar-title">Dashboard</div>
-  <span class="badge badge-green" style="flex-shrink:0">Season A</span>
-</div>
-{% endblock %}
+{% block topbar_title %}Dashboard{% endblock %}
 {% block content %}
 <div class="grid-4" style="margin-bottom:16px">
-  <div class="stat-card"><div class="stat-label">Active crops</div><div class="stat-value">4</div><div class="stat-sub">Maize, Beans, Coffee, Banana</div></div>
-  <div class="stat-card"><div class="stat-label">Active alerts</div><div class="stat-value" style="color:var(--amber-dark)">2</div><div class="stat-sub">Disease &amp; weather</div></div>
-  <div class="stat-card"><div class="stat-label">Best maize price</div><div class="stat-value" style="color:var(--green-dark)">1,450</div><div class="stat-sub">UGX/kg · Owino Market</div></div>
-  <div class="stat-card"><div class="stat-label">Next rain</div><div class="stat-value">Thu</div><div class="stat-sub">~18mm expected</div></div>
+  <div class="stat-card"><div class="stat-label translatable">Active crops</div><div class="stat-value">4</div><div class="stat-sub">Maize, Beans, Coffee, Banana</div></div>
+  <div class="stat-card"><div class="stat-label translatable">Active alerts</div><div class="stat-value" style="color:var(--amber-dark)">2</div><div class="stat-sub translatable">Disease &amp; weather</div></div>
+  <div class="stat-card"><div class="stat-label translatable">Best maize price</div><div class="stat-value" style="color:var(--green-dark)">1,450</div><div class="stat-sub">UGX/kg &middot; Owino Market</div></div>
+  <div class="stat-card"><div class="stat-label translatable">Next rain</div><div class="stat-value">Thu</div><div class="stat-sub">~18mm expected</div></div>
 </div>
 
-<div class="alert-strip danger"><span class="translatable"><strong>Fall Armyworm risk elevated</strong> — Scout maize fields in Central Uganda immediately.</span></div>
-<div class="alert-strip warning"><span class="translatable"><strong>Heavy rains expected Thu–Fri</strong> — Delay fertilizer application to avoid runoff losses.</span></div>
+<div class="alert-strip danger"><span class="translatable"><strong>Fall Armyworm risk elevated</strong> &mdash; Scout maize fields in Central Uganda immediately.</span></div>
+<div class="alert-strip warning"><span class="translatable"><strong>Heavy rains expected Thu&ndash;Fri</strong> &mdash; Delay fertilizer application to avoid runoff losses.</span></div>
 
 <div class="grid-2" style="margin-top:16px">
   <div>
-    <div class="section-title">Features</div>
+    <div class="section-title translatable">Features</div>
     <div class="card" style="padding:0;overflow:hidden">
       <a href="/crops/" class="menu-row" style="display:flex">
         <div class="menu-icon" style="background:#E1F5EE"><svg viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2"><path d="M12 22V12m0 0C12 7 7 5 3 6c0 4 2 8 9 6m0 0c0-5 5-7 9-6-1 4-3 7-9 6"/></svg></div>
-        <div class="menu-text"><div class="menu-title">Crop Guidance</div><div class="menu-sub">Planting calendars, AI advisor</div></div>
+        <div class="menu-text"><div class="menu-title translatable">Crop Guidance</div><div class="menu-sub translatable">Planting calendars, AI advisor</div></div>
         <div class="menu-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </a>
       <a href="/market/" class="menu-row" style="display:flex">
         <div class="menu-icon" style="background:#EAF3DE"><svg viewBox="0 0 24 24" fill="none" stroke="#3B6D11" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <div class="menu-text"><div class="menu-title">Market Prices</div><div class="menu-sub">Live prices, all major markets</div></div>
+        <div class="menu-text"><div class="menu-title translatable">Market Prices</div><div class="menu-sub translatable">Live prices, all major markets</div></div>
         <div class="menu-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </a>
       <a href="/disease/report/" class="menu-row" style="display:flex">
         <div class="menu-icon" style="background:#FCEBEB"><svg viewBox="0 0 24 24" fill="none" stroke="#A32D2D" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-        <div class="menu-text"><div class="menu-title">Disease Detection</div><div class="menu-sub">Upload photo for AI diagnosis</div></div>
+        <div class="menu-text"><div class="menu-title translatable">Disease Detection</div><div class="menu-sub translatable">Upload photo for AI diagnosis</div></div>
         <div class="menu-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </a>
       <a href="/veterinary/" class="menu-row" style="display:flex">
         <div class="menu-icon" style="background:#FAEEDA"><svg viewBox="0 0 24 24" fill="none" stroke="#854F0B" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-        <div class="menu-text"><div class="menu-title">Vet Advice</div><div class="menu-sub">Animal health, vaccines</div></div>
+        <div class="menu-text"><div class="menu-title translatable">Vet Advice</div><div class="menu-sub translatable">Animal health, vaccines</div></div>
         <div class="menu-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </a>
       <a href="/weather/" class="menu-row" style="display:flex">
         <div class="menu-icon" style="background:#E6F1FB"><svg viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></div>
-        <div class="menu-text"><div class="menu-title">Weather</div><div class="menu-sub">7-day forecast, planting tips</div></div>
+        <div class="menu-text"><div class="menu-title translatable">Weather</div><div class="menu-sub translatable">7-day forecast, planting tips</div></div>
         <div class="menu-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       </a>
     </div>
   </div>
   <div>
-    <div class="section-title">No smartphone? Use USSD or SMS</div>
+    <div class="section-title translatable">No smartphone? Use USSD or SMS</div>
     <div class="card" style="background:#EAF3DE;border-color:#9FE1CB">
       <div style="font-size:13px;color:#085041;line-height:1.8">
-        <strong>Dial *217#</strong> from any mobile phone<br>
-        <strong>SMS 8217</strong> — send text commands<br>
-        Available in English, Luganda &amp; Acholi
+        <strong class="translatable">Dial *217#</strong> <span class="translatable">from any mobile phone</span><br>
+        <strong>SMS 8217</strong> &mdash; <span class="translatable">send text commands</span><br>
+        <span class="translatable">Available in English, Luganda &amp; Acholi</span>
       </div>
     </div>
-    <div class="section-title" style="margin-top:16px">SMS commands</div>
+    <div class="section-title translatable" style="margin-top:16px">SMS commands</div>
     <div class="card" style="padding:0">
       <table>
-        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">PRICE MAIZE</td><td style="color:var(--text-muted)">Latest maize prices</td></tr>
-        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">WEATHER MUKONO</td><td style="color:var(--text-muted)">Local forecast</td></tr>
-        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">DISEASE MAIZE</td><td style="color:var(--text-muted)">Maize disease alerts</td></tr>
-        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">VET COW FEVER</td><td style="color:var(--text-muted)">Vet advice by SMS</td></tr>
+        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">PRICE MAIZE</td><td style="color:var(--text-muted)" class="translatable">Latest maize prices</td></tr>
+        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">WEATHER MUKONO</td><td style="color:var(--text-muted)" class="translatable">Local forecast</td></tr>
+        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">DISEASE MAIZE</td><td style="color:var(--text-muted)" class="translatable">Maize disease alerts</td></tr>
+        <tr><td style="font-family:monospace;font-size:12px;color:var(--green-dark)">VET COW FEVER</td><td style="color:var(--text-muted)" class="translatable">Vet advice by SMS</td></tr>
       </table>
     </div>
   </div>

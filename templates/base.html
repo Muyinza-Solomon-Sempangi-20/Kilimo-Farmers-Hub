@@ -46,6 +46,12 @@ nav{padding:10px 0;flex:1;overflow-y:auto}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--text-main);flex-shrink:0}
 .hamburger svg{width:22px;height:22px;display:block}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:150}
+.topbar-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.topbar-user{display:flex;align-items:center;gap:8px;padding:5px 10px;border-radius:8px;border:1px solid var(--gray-border);text-decoration:none;color:var(--text-main);font-size:12px;font-weight:500;transition:background .15s}
+.topbar-user:hover{background:var(--gray-bg)}
+.topbar-avatar{width:28px;height:28px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--green-dark);flex-shrink:0}
+.topbar-logout{display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;border:1px solid var(--gray-border);text-decoration:none;color:var(--text-muted);font-size:12px;font-weight:500;transition:all .15s;background:none;cursor:pointer}
+.topbar-logout:hover{background:var(--red-light);color:var(--red-dark);border-color:var(--red)}
 
 /* ── CONTENT ── */
 .content{padding:20px;flex:1}
@@ -145,6 +151,8 @@ tr:hover td{background:var(--gray-bg)}
   table{font-size:12px}
   th,td{padding:8px 10px}
   .chat-msg{max-width:92%}
+  .topbar-user span{display:none}
+  .topbar-logout span{display:none}
 }
 @media(max-width:400px){
   .grid-4{grid-template-columns:1fr 1fr}
@@ -197,29 +205,29 @@ tr:hover td{background:var(--gray-bg)}
       <div class="nav-section">Main</div>
       <a href="/" class="nav-item {% block nav_home %}{% endblock %}" onclick="closeSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Dashboard
+        <span class="translatable">Dashboard</span>
       </a>
       <a href="/crops/" class="nav-item {% block nav_crops %}{% endblock %}" onclick="closeSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22V12m0 0C12 7 7 5 3 6c0 4 2 8 9 6m0 0c0-5 5-7 9-6-1 4-3 7-9 6"/></svg>
-        Crop Guidance
+        <span class="translatable">Crop Guidance</span>
       </a>
       <a href="/market/" class="nav-item {% block nav_market %}{% endblock %}" onclick="closeSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Market Prices
+        <span class="translatable">Market Prices</span>
       </a>
       <div class="nav-section">Health</div>
       <a href="/disease/report/" class="nav-item {% block nav_disease %}{% endblock %}" onclick="closeSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Disease Detection
+        <span class="translatable">Disease Detection</span>
       </a>
       <a href="/veterinary/" class="nav-item {% block nav_vet %}{% endblock %}" onclick="closeSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-        Vet Advice
+        <span class="translatable">Vet Advice</span>
       </a>
       <div class="nav-section">Info</div>
       <a href="/weather/" class="nav-item {% block nav_weather %}{% endblock %}" onclick="closeSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-        Weather
+        <span class="translatable">Weather</span>
       </a>
 
       <div class="nav-section">Language / Lulimi</div>
@@ -243,20 +251,59 @@ tr:hover td{background:var(--gray-bg)}
     </nav>
     <div class="sidebar-footer" style="padding:14px 18px;border-top:1px solid var(--gray-border)">
       {% if user.is_authenticated %}
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div>
-          <div style="font-size:12px;font-weight:600;color:var(--text-main)">{{ user.get_full_name|default:user.username }}</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--green-dark);flex-shrink:0">
+          {{ user.first_name.0|default:user.username.0|upper }}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ user.get_full_name|default:user.username }}</div>
           <div style="font-size:11px;color:var(--text-muted)">{% if user.farmer_profile %}{{ user.farmer_profile.get_district_display }}{% endif %}</div>
         </div>
-        <a href="/accounts/logout/" style="font-size:11px;color:var(--text-muted);border:1px solid var(--gray-border);border-radius:6px;padding:4px 8px;transition:all .12s" title="Logout">Logout</a>
+      </div>
+      <div style="display:flex;gap:6px">
+        <a href="/accounts/profile/" style="flex:1;text-align:center;font-size:11px;color:var(--green-dark);border:1px solid var(--green-mid);border-radius:6px;padding:6px 8px;transition:all .12s;font-weight:500">Profile</a>
+        <a href="/accounts/logout/" style="flex:1;text-align:center;font-size:11px;color:var(--text-muted);border:1px solid var(--gray-border);border-radius:6px;padding:6px 8px;transition:all .12s">Logout</a>
       </div>
       {% endif %}
-      <div style="font-size:11px;color:var(--text-muted)">USSD: *217# &nbsp;|&nbsp; SMS: 8217</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:10px">USSD: *217# &nbsp;|&nbsp; SMS: 8217</div>
     </div>
   </aside>
 
   <main class="main">
-    {% block topbar %}{% endblock %}
+    {% block topbar %}
+    <div class="topbar">
+      <button class="hamburger" onclick="openSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title">{% block topbar_title %}Kilimo Hub{% endblock %}</div>
+      <div class="topbar-actions">
+        <div class="lang-switcher">
+          <button class="lang-btn" onclick="toggleLangDropdown(event)">
+            <span id="current-lang-label">English</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="lang-dropdown" id="lang-dropdown">
+            <div class="lang-option active-lang" onclick="setLang('en','English')"><span class="lang-flag">&#127468;&#127463;</span>English</div>
+            <div class="lang-option" onclick="setLang('lug','Luganda')"><span class="lang-flag">&#127482;&#127462;</span>Luganda</div>
+            <div class="lang-option" onclick="setLang('ach','Acholi')"><span class="lang-flag">&#127482;&#127462;</span>Acholi</div>
+            <div class="lang-option" onclick="setLang('nyn','Runyankore')"><span class="lang-flag">&#127482;&#127462;</span>Runyankore</div>
+            <div class="lang-option" onclick="setLang('sog','Lusoga')"><span class="lang-flag">&#127482;&#127462;</span>Lusoga</div>
+            <div class="lang-option" onclick="setLang('teo','Ateso')"><span class="lang-flag">&#127482;&#127462;</span>Ateso</div>
+          </div>
+        </div>
+        {% if user.is_authenticated %}
+        <a href="/accounts/profile/" class="topbar-user">
+          <div class="topbar-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
+          <span>{{ user.first_name|default:user.username }}</span>
+        </a>
+        <a href="/accounts/logout/" class="topbar-logout" title="Logout">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endblock %}
     <div class="content">
       {% if messages %}{% for msg in messages %}
       <div class="alert-strip {% if msg.tags == 'success' %}info{% else %}{{ msg.tags }}{% endif %}">{{ msg }}</div>
@@ -298,7 +345,6 @@ function setLang(code, label) {
   document.getElementById('lang-dropdown').classList.remove('open');
   document.getElementById('current-lang-label').textContent = label;
 
-  // Mark all active
   document.querySelectorAll('.lang-option').forEach(o => {
     o.classList.toggle('active-lang', o.textContent.trim() === label);
   });
@@ -307,8 +353,17 @@ function setLang(code, label) {
   localStorage.setItem('kilimo_lang_label', label);
   currentLang = code;
 
+  // Save to server if logged in
+  fetch('/i18n/save-language/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCsrfToken()
+    },
+    body: JSON.stringify({ language: code })
+  }).catch(() => {});
+
   if (code === 'en') {
-    // Restore originals
     document.querySelectorAll('[data-original]').forEach(el => {
       el.textContent = el.dataset.original;
       delete el.dataset.original;
@@ -377,6 +432,17 @@ function getCsrfToken() {
 
 // Restore language on page load
 window.addEventListener('DOMContentLoaded', () => {
+  // Load preferred language from profile if available
+  {% if user.is_authenticated and user.farmer_profile.preferred_language %}
+  const serverLang = '{{ user.farmer_profile.preferred_language }}';
+  const serverLangMap = {'en':'English','lug':'Luganda','ach':'Acholi','nyn':'Runyankore','sog':'Lusoga','teo':'Ateso'};
+  if (currentLang !== serverLang) {
+    currentLang = serverLang;
+    localStorage.setItem('kilimo_lang', serverLang);
+    localStorage.setItem('kilimo_lang_label', serverLangMap[serverLang] || serverLang);
+  }
+  {% endif %}
+
   if (currentLang && currentLang !== 'en') {
     const label = localStorage.getItem('kilimo_lang_label') || currentLang;
     document.getElementById('current-lang-label').textContent = label;

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block nav_home %}{% endblock %}
+
+{% block topbar %}
+<div class="topbar">
+  <button class="hamburger" onclick="openSidebar()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="topbar-title">My Profile</div>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="toggleLangDropdown(event)">
+      <span id="current-lang-label">English</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="lang-dropdown" id="lang-dropdown">
+      <div class="lang-option active-lang" onclick="setLang('en','English')"><span class="lang-flag">&#127468;&#127463;</span>English</div>
+      <div class="lang-option" onclick="setLang('lug','Luganda')"><span class="lang-flag">&#127482;&#127462;</span>Luganda</div>
+      <div class="lang-option" onclick="setLang('ach','Acholi')"><span class="lang-flag">&#127482;&#127462;</span>Acholi</div>
+      <div class="lang-option" onclick="setLang('nyn','Runyankore')"><span class="lang-flag">&#127482;&#127462;</span>Runyankore</div>
+      <div class="lang-option" onclick="setLang('sog','Lusoga')"><span class="lang-flag">&#127482;&#127462;</span>Lusoga</div>
+      <div class="lang-option" onclick="setLang('teo','Ateso')"><span class="lang-flag">&#127482;&#127462;</span>Ateso</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="max-width:600px;margin:0 auto">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--gray-border)">
+      <div style="width:56px;height:56px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:600;color:var(--green-dark)">
+        {{ user.first_name.0|default:user.username.0|upper }}
+      </div>
+      <div>
+        <div style="font-size:16px;font-weight:600">{{ user.get_full_name|default:user.username }}</div>
+        <div style="font-size:13px;color:var(--text-muted)">@{{ user.username }}</div>
+      </div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="section-title" style="margin-top:0">Personal Information</div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" name="first_name" value="{{ user.first_name }}" required>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" name="last_name" value="{{ user.last_name }}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ user.email|default:'' }}" placeholder="your@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" name="phone" value="{{ profile.phone }}" placeholder="+256 7XX XXX XXX">
+      </div>
+
+      <div class="section-title">Farm Details</div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>District</label>
+          <select name="district">
+            <option value="kampala" {% if profile.district == 'kampala' %}selected{% endif %}>Kampala</option>
+            <option value="mukono" {% if profile.district == 'mukono' %}selected{% endif %}>Mukono</option>
+            <option value="wakiso" {% if profile.district == 'wakiso' %}selected{% endif %}>Wakiso</option>
+            <option value="jinja" {% if profile.district == 'jinja' %}selected{% endif %}>Jinja</option>
+            <option value="gulu" {% if profile.district == 'gulu' %}selected{% endif %}>Gulu</option>
+            <option value="mbarara" {% if profile.district == 'mbarara' %}selected{% endif %}>Mbarara</option>
+            <option value="arua" {% if profile.district == 'arua' %}selected{% endif %}>Arua</option>
+            <option value="lira" {% if profile.district == 'lira' %}selected{% endif %}>Lira</option>
+            <option value="soroti" {% if profile.district == 'soroti' %}selected{% endif %}>Soroti</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Village</label>
+          <input type="text" name="village" value="{{ profile.village }}" placeholder="Village name">
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Farm Size (acres)</label>
+          <input type="number" name="farm_size_acres" value="{{ profile.farm_size_acres }}" step="0.1" min="0">
+        </div>
+        <div class="form-group">
+          <label>Preferred Language</label>
+          <select name="preferred_language">
+            <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English</option>
+            <option value="lug" {% if profile.preferred_language == 'lug' %}selected{% endif %}>Luganda</option>
+            <option value="ach" {% if profile.preferred_language == 'ach' %}selected{% endif %}>Acholi</option>
+            <option value="nyn" {% if profile.preferred_language == 'nyn' %}selected{% endif %}>Runyankore</option>
+            <option value="sog" {% if profile.preferred_language == 'sog' %}selected{% endif %}>Lusoga</option>
+            <option value="teo" {% if profile.preferred_language == 'teo' %}selected{% endif %}>Ateso</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-title">Change Password <span style="font-weight:400;color:var(--text-muted)">(optional)</span></div>
+
+      <div class="grid-2">
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" name="password1" placeholder="Leave blank to keep current">
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" name="password2" placeholder="Confirm new password">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a href="/" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
