@@ -424,15 +424,23 @@ def _handle_account_menu(choice, history, state, session, user):
 
 def send_sms(phone_number, message):
     """Send SMS via Africa's Talking API."""
+    api_key = getattr(settings, 'AT_API_KEY', '')
+    if not api_key:
+        print(f"[SMS] No API key configured. Message to {phone_number}: {message[:80]}...")
+        return False
+
     try:
         import africastalking
         africastalking.initialize(
-            username='MuyinzaSolomon10',
-            api_key=getattr(settings, 'AT_API_KEY', ''),
+            username=getattr(settings, 'AT_USERNAME', 'sandbox'),
+            api_key=api_key,
         )
         sms = africastalking.SMS
         response = sms.send(message, [phone_number])
         return True
+    except ImportError:
+        print(f"[SMS] africastalking not installed. Run: pip install africastalking")
+        return False
     except Exception as e:
         print(f"[SMS] Failed to send to {phone_number}: {e}")
         return False

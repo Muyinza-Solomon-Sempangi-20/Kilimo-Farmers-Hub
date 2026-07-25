@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kilimo Hub - USSD & SMS Simulator</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#0f1117; color:#e0e0e0; min-height:100vh; padding:20px; }
+  .container { max-width:900px; margin:0 auto; }
+  h1 { text-align:center; color:#4ade80; margin-bottom:8px; font-size:22px; }
+  .subtitle { text-align:center; color:#888; margin-bottom:30px; font-size:13px; }
+  .panels { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:700px) { .panels { grid-template-columns:1fr; } }
+  .panel { background:#1a1d27; border:1px solid #2a2d3a; border-radius:12px; padding:20px; }
+  .panel h2 { font-size:16px; margin-bottom:15px; display:flex; align-items:center; gap:8px; }
+  .panel h2 .icon { font-size:22px; }
+  .ussd-icon { color:#f59e0b; }
+  .sms-icon { color:#3b82f6; }
+  .phone-frame { background:#111; border:2px solid #333; border-radius:20px; padding:15px; min-height:300px; margin-bottom:15px; font-family:'Courier New',monospace; font-size:13px; line-height:1.6; white-space:pre-wrap; overflow-y:auto; max-height:400px; }
+  .phone-frame .con { color:#4ade80; }
+  .phone-frame .end { color:#ef4444; }
+  .input-row { display:flex; gap:8px; margin-top:10px; }
+  .input-row input { flex:1; background:#1a1d27; border:1px solid #333; color:#fff; padding:10px 12px; border-radius:8px; font-size:14px; }
+  .input-row input:focus { outline:none; border-color:#4ade80; }
+  .input-row button { background:#4ade80; color:#000; border:none; padding:10px 18px; border-radius:8px; font-weight:700; cursor:pointer; font-size:14px; white-space:nowrap; }
+  .input-row button:hover { background:#22c55e; }
+  .input-row button.danger { background:#ef4444; color:#fff; }
+  .input-row button.danger:hover { background:#dc2626; }
+  .commands { margin-top:15px; }
+  .commands h3 { color:#888; font-size:12px; margin-bottom:8px; text-transform:uppercase; letter-spacing:1px; }
+  .cmd-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .cmd-btn { background:#1e2130; border:1px solid #333; color:#ccc; padding:8px 10px; border-radius:6px; cursor:pointer; font-size:12px; font-family:'Courier New',monospace; text-align:left; transition:all 0.15s; }
+  .cmd-btn:hover { background:#2a2d3a; border-color:#4ade80; color:#4ade80; }
+  .status { text-align:center; padding:8px; font-size:12px; color:#666; border-top:1px solid #2a2d3a; margin-top:15px; }
+  .status.live { color:#4ade80; }
+  .config-box { background:#111; border:1px solid #333; border-radius:8px; padding:12px; margin-top:15px; font-size:12px; }
+  .config-box code { color:#f59e0b; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Kilimo Hub Telecom Simulator</h1>
+  <p class="subtitle">Test the *217# USSD menu and 8217 SMS commands right here</p>
+
+  <div class="panels">
+    <!-- USSD Panel -->
+    <div class="panel">
+      <h2><span class="icon ussd-icon">&#9742;</span> USSD *217#</h2>
+      <div class="phone-frame" id="ussd-screen">Dial *217# to start...</div>
+      <div class="input-row">
+        <input type="text" id="ussd-input" placeholder="Type your choice (1, 2, 3...)" onkeypress="if(event.key==='Enter')sendUSSD()">
+        <button onclick="sendUSSD()">Send</button>
+        <button class="danger" onclick="resetUSSD()">End</button>
+      </div>
+      <div class="commands">
+        <h3>Quick Actions</h3>
+        <div class="cmd-grid">
+          <div class="cmd-btn" onclick="quickUSSD('1')">1. Weather</div>
+          <div class="cmd-btn" onclick="quickUSSD('2')">2. Market Prices</div>
+          <div class="cmd-btn" onclick="quickUSSD('3')">3. Disease Check</div>
+          <div class="cmd-btn" onclick="quickUSSD('4')">4. Vet Help</div>
+          <div class="cmd-btn" onclick="quickUSSD('5')">5. My Account</div>
+          <div class="cmd-btn" onclick="resetUSSD()">0. Exit / Reset</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMS Panel -->
+    <div class="panel">
+      <h2><span class="icon sms-icon">&#9993;</span> SMS 8217</h2>
+      <div class="phone-frame" id="sms-screen">Type an SMS command below...</div>
+      <div class="input-row">
+        <input type="text" id="sms-input" placeholder="e.g. PRICE Maize" onkeypress="if(event.key==='Enter')sendSMS()">
+        <button onclick="sendSMS()">Send SMS</button>
+      </div>
+      <div class="commands">
+        <h3>Example Commands</h3>
+        <div class="cmd-grid">
+          <div class="cmd-btn" onclick="quickSMS('PRICE Maize')">PRICE Maize</div>
+          <div class="cmd-btn" onclick="quickSMS('PRICE Beans')">PRICE Beans</div>
+          <div class="cmd-btn" onclick="quickSMS('WEATHER Mukono')">WEATHER Mukono</div>
+          <div class="cmd-btn" onclick="quickSMS('WEATHER Kampala')">WEATHER Kampala</div>
+          <div class="cmd-btn" onclick="quickSMS('DISEASE Maize yellow leaves')">DISEASE Maize...</div>
+          <div class="cmd-btn" onclick="quickSMS('VET Cow fever')">VET Cow fever</div>
+          <div class="cmd-btn" onclick="quickSMS('DISTRICT Mukono')">DISTRICT Mukono</div>
+          <div class="cmd-btn" onclick="quickSMS('HELP')">HELP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="config-box">
+    <strong>How it works:</strong><br>
+    This simulator runs the exact same code as the real *217# USSD and 8217 SMS service.<br>
+    <strong>USSD callback URL:</strong> <code>https://MuyinzaSolomon10.pythonanywhere.com/telecom/ussd/</code><br>
+    <strong>SMS callback URL:</strong> <code>https://MuyinzaSolomon10.pythonanywhere.com/telecom/sms/</code><br>
+    Once you add your Africa's Talking API key, real phones can access these same menus.
+  </div>
+</div>
+
+<script>
+let ussdHistory = [];
+let ussdSession = 'sim-' + Date.now();
+
+function appendScreen(id, text, cls) {
+  const el = document.getElementById(id);
+  const line = document.createElement('div');
+  line.className = cls || '';
+  line.textContent = text;
+  el.appendChild(line);
+  el.appendChild(document.createTextNode('\n'));
+  el.scrollTop = el.scrollHeight;
+}
+
+function resetUSSD() {
+  ussdHistory = [];
+  ussdSession = 'sim-' + Date.now();
+  document.getElementById('ussd-screen').innerHTML = '';
+  appendScreen('ussd-screen', 'Dialing *217#...', 'con');
+  setTimeout(() => {
+    fetch('/telecom/test/ussd/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `sessionId=${ussdSession}&phoneNumber=+256700000000&text=`
+    }).then(r => r.json()).then(data => {
+      appendScreen('ussd-screen', data.raw, 'con');
+    });
+  }, 500);
+}
+
+function sendUSSD() {
+  const input = document.getElementById('ussd-input');
+  const val = input.value.trim();
+  if (!val) return;
+
+  appendScreen('ussd-screen', '> ' + val);
+  ussdHistory.push(val);
+  input.value = '';
+
+  const text = ussdHistory.join('*');
+
+  fetch('/telecom/test/ussd/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: `sessionId=${ussdSession}&phoneNumber=+256700000000&text=${encodeURIComponent(text)}`
+  }).then(r => r.json()).then(data => {
+    appendScreen('ussd-screen', data.raw, data.continue ? 'con' : 'end');
+    if (!data.continue) {
+      ussdHistory = [];
+    }
+  });
+}
+
+function quickUSSD(val) {
+  document.getElementById('ussd-input').value = val;
+  sendUSSD();
+}
+
+function sendSMS() {
+  const input = document.getElementById('sms-input');
+  const val = input.value.trim();
+  if (!val) return;
+
+  appendScreen('sms-screen', 'To 8217: ' + val);
+  input.value = '';
+
+  fetch('/telecom/test/sms/', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: `message=${encodeURIComponent(val)}&phoneNumber=+256700000000`
+  }).then(r => r.json()).then(data => {
+    appendScreen('sms-screen', 'From 8217:\n' + data.response, 'con');
+  });
+}
+
+function quickSMS(cmd) {
+  document.getElementById('sms-input').value = cmd;
+  sendSMS();
+}
+
+// Auto-start USSD on page load
+resetUSSD();
+</script>
+</body>
+</html>
