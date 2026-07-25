@@ -13,4 +13,5 @@ urlpatterns = [
     path('veterinary/', include('veterinary.urls')),
     path('weather/', include('weather.urls')),
     path('i18n/', include('translation.urls')),
+    path('telecom/', include('telecom.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

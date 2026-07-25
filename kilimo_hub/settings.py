@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'weather',
     'accounts',
     'translation',
+    'telecom',
 ]
 
 MIDDLEWARE = [
@@ -90,3 +91,8 @@ SUNBIRD_API_KEY = os.environ.get('SUNBIRD_API_KEY', '')
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# Africa's Talking API (for USSD *217# and SMS 8217)
+AT_USERNAME = os.environ.get('AT_USERNAME', 'MuyinzaSolomon10')
+AT_API_KEY = os.environ.get('AT_API_KEY', '')
+AT_SENDER_ID = os.environ.get('AT_SENDER_ID', '')
