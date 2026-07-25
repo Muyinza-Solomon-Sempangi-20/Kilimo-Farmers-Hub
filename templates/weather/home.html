@@ -6,7 +6,7 @@
   <button class="hamburger" onclick="openSidebar()" aria-label="Open menu">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
-  <div class="topbar-title">Weather — {{ district }}</div>
+  <div class="topbar-title">Weather &mdash; {{ district }}</div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     {% if forecast.source == 'live' %}
       <span class="badge badge-green">Live data</span>
@@ -32,9 +32,9 @@
 <div class="grid-2" style="margin-bottom:14px">
   <div class="card" style="display:flex;align-items:center;gap:20px">
     <div>
-      <div style="font-size:52px;font-weight:600;line-height:1;color:var(--text-main)">{{ forecast.current.temp }}°C</div>
+      <div style="font-size:52px;font-weight:600;line-height:1;color:var(--text-main)">{{ forecast.current.temp }}&deg;C</div>
       <div style="font-size:13px;color:var(--text-muted);margin-top:4px" class="translatable">{{ forecast.current.desc }}</div>
-      <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Feels like {{ forecast.current.feels_like|default:forecast.current.temp }}°C</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Feels like {{ forecast.current.feels_like|default:forecast.current.temp }}&deg;C</div>
     </div>
     <div style="font-size:13px;line-height:2.2;color:var(--text-muted)">
       <div><strong style="color:var(--text-main)">Humidity</strong> {{ forecast.current.humidity }}%</div>
@@ -66,8 +66,8 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="#6b6b65" stroke-width="2" style="width:24px;height:24px;margin:0 auto;display:block"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
       {% endif %}
     </div>
-    <div style="font-size:14px;font-weight:600">{{ day.temp_hi }}°</div>
-    <div style="font-size:10px;color:var(--text-muted)">{{ day.temp_lo }}°</div>
+    <div style="font-size:14px;font-weight:600">{{ day.temp_hi }}&deg;</div>
+    <div style="font-size:10px;color:var(--text-muted)">{{ day.temp_lo }}&deg;</div>
     {% if day.rain_mm %}<div style="font-size:10px;color:#185FA5;margin-top:3px">{{ day.rain_mm }}mm</div>{% endif %}
     <div style="font-size:10px;color:var(--text-muted);margin-top:2px" class="translatable">{{ day.desc }}</div>
   </div>
@@ -126,7 +126,7 @@ function detectWeatherLocation() {
 
 {% if forecast.fetched_at %}
 <div style="margin-top:14px;font-size:11px;color:var(--text-muted)">
-  Data source: OpenWeatherMap ·
+  Data source: OpenWeatherMap &middot;
   {% if forecast.from_cache %}Cached{% else %}Just fetched{% endif %}
 </div>
 {% endif %}

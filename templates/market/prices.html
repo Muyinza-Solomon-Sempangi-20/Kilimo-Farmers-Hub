@@ -28,7 +28,7 @@
 </div>
 
 <div class="card" style="background:#E1F5EE;border-color:#9FE1CB;margin-bottom:14px">
-  <div style="font-size:13px;color:#085041"><strong>Selling tip:</strong> Maize prices are 8% above the 30-day average. Consider selling 30–50% of your stock now while prices are high.</div>
+  <div style="font-size:13px;color:#085041"><strong>Selling tip:</strong> Maize prices are 8% above the 30-day average. Consider selling 30&ndash;50% of your stock now while prices are high.</div>
 </div>
 
 <div class="card" style="padding:0;overflow:hidden">
@@ -41,7 +41,7 @@
       <tbody>
         {% if prices %}
           {% for p in prices %}
-          <tr><td><strong>{{ p.market.name }}</strong></td><td>{{ p.market.district|title }}</td><td style="font-weight:600;color:var(--green-dark)">{{ p.price_ugx }}</td><td>—</td></tr>
+          <tr><td><strong>{{ p.market.name }}</strong></td><td>{{ p.market.district|title }}</td><td style="font-weight:600;color:var(--green-dark)">{{ p.price_ugx }}</td><td>&mdash;</td></tr>
           {% endfor %}
         {% else %}
           <tr><td><strong>St. Balikuddembe (Owino)</strong></td><td>Kampala</td><td style="font-weight:600;color:var(--green-dark)">1,450</td><td><span class="up">+50</span></td></tr>

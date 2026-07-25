@@ -20,16 +20,16 @@
         <a href="/crops/{{ crop.pk }}/" class="card" style="display:block;padding:14px">
           <div style="font-size:13px;font-weight:500">{{ crop.name }}</div>
           {% if crop.local_name %}<div style="font-size:11px;color:var(--text-muted)">{{ crop.local_name }}</div>{% endif %}
-          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">{{ crop.days_to_maturity_min }}–{{ crop.days_to_maturity_max }} days</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">{{ crop.days_to_maturity_min }}&ndash;{{ crop.days_to_maturity_max }} days</div>
         </a>
         {% endfor %}
       {% else %}
-        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Maize</div><div style="font-size:11px;color:var(--text-muted)">Emere · 80–90 days</div></div>
-        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Beans</div><div style="font-size:11px;color:var(--text-muted)">Obugobe · 60–75 days</div></div>
-        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Coffee (Robusta)</div><div style="font-size:11px;color:var(--text-muted)">Kawuwa · Perennial</div></div>
-        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Banana (Matoke)</div><div style="font-size:11px;color:var(--text-muted)">Gonja · 9–12 months</div></div>
-        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Cassava</div><div style="font-size:11px;color:var(--text-muted)">Muwogo · 9–12 months</div></div>
-        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Sweet Potato</div><div style="font-size:11px;color:var(--text-muted)">Lumonde · 3–5 months</div></div>
+        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Maize</div><div style="font-size:11px;color:var(--text-muted)">Emere &middot; 80&ndash;90 days</div></div>
+        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Beans</div><div style="font-size:11px;color:var(--text-muted)">Obugobe &middot; 60&ndash;75 days</div></div>
+        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Coffee (Robusta)</div><div style="font-size:11px;color:var(--text-muted)">Kawuwa &middot; Perennial</div></div>
+        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Banana (Matoke)</div><div style="font-size:11px;color:var(--text-muted)">Gonja &middot; 9&ndash;12 months</div></div>
+        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Cassava</div><div style="font-size:11px;color:var(--text-muted)">Muwogo &middot; 9&ndash;12 months</div></div>
+        <div class="card" style="padding:14px"><div style="font-size:13px;font-weight:500">Sweet Potato</div><div style="font-size:11px;color:var(--text-muted)">Lumonde &middot; 3&ndash;5 months</div></div>
       {% endif %}
     </div>
   </div>
