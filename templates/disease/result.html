@@ -17,12 +17,21 @@
       <img src="{{ report.photo.url }}" alt="Submitted crop photo" style="width:100%;border-radius:6px;display:block">
     </div>
     {% endif %}
+
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="font-size:14px;font-weight:600">AI Diagnosis</div>
-        {% if report.ai_confidence %}<span class="badge badge-green">{{ report.ai_confidence|floatformat:0 }}% confident</span>{% endif %}
+        {% if report.ai_confidence %}
+          {% if report.ai_confidence >= 0.6 %}
+            <span class="badge badge-green">{{ report.ai_confidence|floatformat:0 }}% confident</span>
+          {% elif report.ai_confidence >= 0.3 %}
+            <span class="badge badge-amber">{{ report.ai_confidence|floatformat:0 }}% confident</span>
+          {% else %}
+            <span class="badge" style="background:var(--gray-bg);color:var(--text-muted)">{{ report.ai_confidence|floatformat:0 }}% confident</span>
+          {% endif %}
+        {% endif %}
       </div>
-      <p style="font-size:13px;line-height:1.7">{{ report.ai_diagnosis }}</p>
+      <p style="font-size:13px;line-height:1.7;white-space:pre-line">{{ report.ai_diagnosis }}</p>
       <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">
         Crop: {{ report.crop_name|default:"Not specified" }} &nbsp;|&nbsp; District: {{ report.district|default:"Not specified" }}
       </div>
@@ -30,16 +39,32 @@
   </div>
   <div>
     <div class="section-title">Recommended action</div>
-    <div class="alert-strip danger" style="border-radius:8px;margin-bottom:12px">
-      <strong>Treat immediately.</strong> Apply Emamectin benzoate (0.5g/L) or Chlorpyrifos in the maize whorl. Best applied at dusk when larvae are active. Repeat after 7 days if needed.
+
+    {% if report.status == 'identified' %}
+      <div class="alert-strip danger" style="border-radius:8px;margin-bottom:12px">
+        <strong>Disease identified.</strong> Follow the treatment steps in your diagnosis above. Act quickly to prevent spread to other plants.
+      </div>
+    {% elif report.status == 'pending' %}
+      <div class="alert-strip warning" style="border-radius:8px;margin-bottom:12px">
+        <strong>Needs more information.</strong> The AI could not identify the disease with high confidence. Consult your local extension officer for a hands-on diagnosis.
+      </div>
+    {% endif %}
+
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">General field tips</div>
+      <div style="font-size:13px;color:var(--text-muted);line-height:1.7">
+        Scout your fields at least twice a week. Remove and destroy infected plant material. Avoid working in wet fields. Disinfect tools between plants.
+      </div>
     </div>
-    <div class="card">
+
+    <div class="card" style="margin-bottom:12px">
       <div style="font-size:13px;font-weight:600;margin-bottom:8px">Report to authorities</div>
       <div style="font-size:13px;color:var(--text-muted);line-height:1.7">
         Contact your MAAIF extension officer or call the Agriculture Helpline:<br>
         <strong style="color:var(--text-main)">0800 100 066</strong> (toll-free)
       </div>
     </div>
+
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
       <a href="/disease/report/" class="btn btn-primary">Report another crop</a>
       <a href="/disease/" class="btn btn-outline">View disease library</a>

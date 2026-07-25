@@ -21,8 +21,10 @@
         <div class="form-group"><label>Describe what you see</label><textarea name="description" rows="3" placeholder="e.g. Yellow spots on leaves, brown stems, holes in leaves..."></textarea></div>
         <div class="form-group"><label>Your district</label>
           <select name="district">
-            <option>Mukono</option><option>Kampala</option><option>Wakiso</option>
-            <option>Jinja</option><option>Gulu</option><option>Mbarara</option><option>Arua</option>
+            <option value="">Select your district</option>
+            {% for d in districts %}
+            <option value="{{ d }}" {% if d == user_district %}selected{% endif %}>{{ d|title }}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="form-group"><label>Phone number (to receive SMS result)</label><input type="tel" name="reporter_phone" placeholder="+256 7XX XXX XXX"></div>
@@ -31,9 +33,15 @@
     </div>
   </div>
   <div>
-    <div class="section-title">Disease alerts near you</div>
-    <div class="alert-strip danger"><strong>Fall Armyworm</strong> &mdash; Active in Mukono &amp; Wakiso. Check maize whorls for larvae at dusk.</div>
-    <div class="alert-strip warning" style="margin-top:4px"><strong>Coffee Wilt Disease</strong> &mdash; 3 farms within 5km of Mukono town.</div>
+    {% if local_alerts %}
+    <div class="section-title">Disease alerts in {{ user_district|title }}</div>
+    {% for alert in local_alerts %}
+    <div class="alert-strip {% if alert.severity == 'danger' %}danger{% elif alert.severity == 'warning' %}warning{% else %}info{% endif %}" style="margin-bottom:8px">
+      <strong>{{ alert.title }}</strong> &mdash; {{ alert.body|truncatewords:25 }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
     <div style="margin-top:16px">
       <div class="section-title">Photo tips for better results</div>
       <div class="card">

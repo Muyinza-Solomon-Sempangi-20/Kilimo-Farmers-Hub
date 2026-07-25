@@ -7,11 +7,25 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <div class="topbar-title">Disease Detection</div>
-  <span class="badge badge-red" style="flex-shrink:0">2 alerts nearby</span>
+  {% if alerts %}
+  <span class="badge badge-red" style="flex-shrink:0">{{ alerts|length }} alert{{ alerts|length|pluralize }} nearby</span>
+  {% endif %}
 </div>
 {% endblock %}
 {% block content %}
-<div class="alert-strip danger">Fall Armyworm and Coffee Wilt Disease active near Mukono District.</div>
+
+{% for alert in alerts %}
+<div class="alert-strip {% if alert.severity == 'danger' %}danger{% elif alert.severity == 'warning' %}warning{% else %}info{% endif %}">
+  <strong>{{ alert.title }}</strong> &mdash; {{ alert.body|truncatewords:30 }}
+  {% if alert.district %}<span style="font-size:11px;opacity:0.7"> ({{ alert.district|title }})</span>{% endif %}
+</div>
+{% empty %}
+{% if user_district %}
+<div class="alert-strip info">No active disease alerts for {{ user_district|title }} district right now.</div>
+{% else %}
+<div class="alert-strip info">Set your district in your profile to receive location-specific disease alerts.</div>
+{% endif %}
+{% endfor %}
 
 <div class="grid-2">
   <div>
@@ -21,20 +35,6 @@
       <div style="font-size:14px;font-weight:500;margin-bottom:6px">Upload a crop photo</div>
       <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px">Take a clear photo of the affected leaf, stem, or fruit</div>
       <a href="/disease/report/" class="btn btn-primary" style="display:inline-flex">Go to diagnosis form</a>
-    </div>
-
-    <div class="section-title" style="margin-top:16px">Active disease alerts</div>
-    <div class="card" style="border-color:#F7C1C1;padding:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <strong style="font-size:13px">Fall Armyworm</strong><span class="badge badge-red">High risk</span>
-      </div>
-      <div style="font-size:12px;color:var(--text-muted)">Affects maize in Central Uganda. Scout whorls for frass and larvae. Treat: Emamectin benzoate 0.5g/L at dusk.</div>
-    </div>
-    <div class="card" style="border-color:#F7C1C1;padding:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <strong style="font-size:13px">Coffee Wilt Disease</strong><span class="badge badge-red">Active nearby</span>
-      </div>
-      <div style="font-size:12px;color:var(--text-muted)">3 farms within 5km of Mukono. Remove infected trees. Plant resistant varieties (KR clones).</div>
     </div>
   </div>
   <div>

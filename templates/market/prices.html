@@ -15,7 +15,7 @@
 {% if district_filter %}
 <div class="alert-strip info" style="border-radius:8px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
   <span>Showing prices for <strong>{{ district_filter|title }}</strong> markets</span>
-  <a href="?commodity={{ selected_commodity.name|default:'' }}" style="color:var(--primary);font-size:12px;text-decoration:underline">Show all</a>
+  <a href="?commodity={{ selected_commodity.name|default:'' }}" style="color:var(--primary);font-size:12px;text-decoration:underline">Show all districts</a>
 </div>
 {% endif %}
 
@@ -24,35 +24,49 @@
   <a href="?commodity=Beans{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Beans' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Beans</a>
   <a href="?commodity=Coffee{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Coffee' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Coffee</a>
   <a href="?commodity=Banana{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Banana' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Banana</a>
+  <a href="?commodity=Rice{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Rice' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Rice</a>
+  <a href="?commodity=Tomatoes{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Tomatoes' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Tomatoes</a>
+  <a href="?commodity=Matooke{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Matooke' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Matooke</a>
   <a href="?commodity=Livestock{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Livestock' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Livestock</a>
+  <a href="?commodity=Goat{% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Goat' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Goat</a>
+  <a href="?commodity=Fish (Tilapia){% if district_filter %}&district={{ district_filter }}{% endif %}" class="btn {% if request.GET.commodity == 'Fish (Tilapia)' %}btn-primary{% else %}btn-outline{% endif %}" style="width:auto">Fish</a>
 </div>
 
-<div class="card" style="background:#E1F5EE;border-color:#9FE1CB;margin-bottom:14px">
-  <div style="font-size:13px;color:#085041"><strong>Selling tip:</strong> Maize prices are 8% above the 30-day average. Consider selling 30&ndash;50% of your stock now while prices are high.</div>
-</div>
-
+{% if prices %}
 <div class="card" style="padding:0;overflow:hidden">
   <div style="padding:14px 16px;border-bottom:1px solid var(--gray-border)">
-    <div class="section-title" style="margin:0">{{ selected_commodity.name|default:"All" }} prices (UGX per kg)</div>
+    <div class="section-title" style="margin:0">{{ selected_commodity.name|default:"All commodities" }} {% if selected_commodity %}({{ selected_commodity.get_unit_display }}){% endif %}</div>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:2px">{{ prices|length }} prices from {{ all_districts|length }} districts</div>
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Market</th><th>District</th><th>Price (UGX/kg)</th><th>Change</th></tr></thead>
+      <thead><tr><th>Market</th><th>District</th><th>Price (UGX)</th><th>Range</th></tr></thead>
       <tbody>
-        {% if prices %}
-          {% for p in prices %}
-          <tr><td><strong>{{ p.market.name }}</strong></td><td>{{ p.market.district|title }}</td><td style="font-weight:600;color:var(--green-dark)">{{ p.price_ugx }}</td><td>&mdash;</td></tr>
-          {% endfor %}
-        {% else %}
-          <tr><td><strong>St. Balikuddembe (Owino)</strong></td><td>Kampala</td><td style="font-weight:600;color:var(--green-dark)">1,450</td><td><span class="up">+50</span></td></tr>
-          <tr><td><strong>Nakasero Market</strong></td><td>Kampala</td><td style="font-weight:600;color:var(--green-dark)">1,380</td><td><span class="up">+20</span></td></tr>
-          <tr><td><strong>Kasubi Market</strong></td><td>Kampala</td><td style="font-weight:600;color:var(--green-dark)">1,300</td><td><span class="down">-30</span></td></tr>
-          <tr><td><strong>Gulu Main Market</strong></td><td>Gulu</td><td style="font-weight:600;color:var(--green-dark)">1,180</td><td style="color:var(--text-muted)">Stable</td></tr>
-          <tr><td><strong>Arua Market</strong></td><td>Arua</td><td style="font-weight:600;color:var(--green-dark)">1,200</td><td style="color:var(--text-muted)">Stable</td></tr>
-          <tr><td><strong>Mbarara Market</strong></td><td>Mbarara</td><td style="font-weight:600;color:var(--green-dark)">1,250</td><td><span class="up">+30</span></td></tr>
-        {% endif %}
+        {% for p in prices %}
+        <tr>
+          <td><strong>{{ p.market.name }}</strong></td>
+          <td>{{ p.market.district|title }}</td>
+          <td style="font-weight:600;color:var(--green-dark)">{{ p.price_ugx|floatformat:0 }}</td>
+          <td style="font-size:11px;color:var(--text-muted)">
+            {% if p.price_min and p.price_max %}{{ p.price_min|floatformat:0 }} &ndash; {{ p.price_max|floatformat:0 }}{% else %}&mdash;{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+{% else %}
+<div class="card">
+  <div style="text-align:center;padding:24px">
+    <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px">No prices available for this selection</div>
+    <div style="font-size:12px;color:var(--text-muted)">Try selecting a different commodity or district</div>
+  </div>
+</div>
+{% endif %}
+
+<div class="card" style="background:#E6F1FB;border-color:#B5D4F4;margin-top:14px">
+  <div style="font-size:12px;color:#0C447C"><strong>Tip:</strong> Prices vary by region. Northern Uganda typically has lower prices due to proximity to production areas. Central Uganda markets (Kampala, Wakiso) tend to have the highest prices.</div>
+</div>
+
 {% endblock %}
