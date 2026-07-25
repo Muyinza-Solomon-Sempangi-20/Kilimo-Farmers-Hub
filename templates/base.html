@@ -526,5 +526,67 @@ function manualLocation(district) {
 }
 </script>
 
+{% if user.is_authenticated %}
+<script>
+// Session security: force re-login if user leaves or is inactive
+(function(){
+  const THRESHOLD = 120; // seconds - if away longer than this, force re-login
+  let lastVisible = Date.now();
+  let isAway = false;
+
+  // Track when user leaves/returns the tab
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) {
+      lastVisible = Date.now();
+      isAway = true;
+    } else if (isAway) {
+      const elapsed = Math.floor((Date.now() - lastVisible) / 1000);
+      if (elapsed >= THRESHOLD) {
+        // User was away too long - force re-login
+        window.location.href = '/accounts/login/?next=' + encodeURIComponent(window.location.pathname);
+      } else {
+        isAway = false;
+      }
+    }
+  });
+
+  // Also detect when user minimizes or switches apps (window blur)
+  window.addEventListener('blur', function(){
+    lastVisible = Date.now();
+    isAway = true;
+  });
+
+  window.addEventListener('focus', function(){
+    if (isAway) {
+      const elapsed = Math.floor((Date.now() - lastVisible) / 1000);
+      if (elapsed >= THRESHOLD) {
+        window.location.href = '/accounts/login/?next=' + encodeURIComponent(window.location.pathname);
+      } else {
+        isAway = false;
+      }
+    }
+  });
+
+  // Also detect mobile app switching
+  document.addEventListener('pause', function(){
+    lastVisible = Date.now();
+    isAway = true;
+  });
+
+  // Heartbeat: check session is still valid every 5 minutes
+  setInterval(function(){
+    if (!document.hidden && !isAway) {
+      fetch('/accounts/profile/', {method:'HEAD', credentials:'same-origin'})
+        .then(function(r){
+          if (r.redirected || r.status === 302 || r.status === 403) {
+            window.location.href = '/accounts/login/?next=' + encodeURIComponent(window.location.pathname);
+          }
+        }).catch(function(){});
+    }
+  }, 300000);
+})();
+</script>
+{% endif %}
+
 </body>
 </html>
