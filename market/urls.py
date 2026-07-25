@@ -4,5 +4,4 @@ app_name = 'market'
 urlpatterns = [
     path('', views.price_list, name='prices'),
     path('markets/', views.market_list, name='markets'),
-    path('seed/', views.seed_prices, name='seed'),
 ]
